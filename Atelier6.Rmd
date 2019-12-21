@@ -1,0 +1,195 @@
+---
+title: "Atelier 6 - Travaux Pratique"
+author: "Nom et Prenom"
+date: "6/12/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Étude cas témois sur l'infarctus du myocarde
+
+Les données suivantes sont issues d'une enquête cas témoins dont le but  était d'évaluer l'existence d'un risque plus élevé de survenue d'un infarctus du myocarde chez les femmes qui utilisent ou ont utilisé des contraceptifs oraux. L'étude a  été menée auprès de 149 femmes ayant eu un infarctus du myocarde (cas) et 300 femmes n'en n'ayant pas eu (témoins). Le facteur d’exposition principal est la prise de contraceptifs oraux, les autres facteurs recueillis sont : l'âge, le poids, la taille, la consommation de tabac, l'hypertension artérielle, les antécédents familiaux de maladies cardio-vasculaires.
+
+### Variables et codage
+
+\begin{tabular}{|l|p{5cm}|c|}
+\hline
+Description & Unite ou Codage & Variable \\
+\hline
+Infarctus du myocarde & 0 = Témoins; 1 = Cas & \texttt{INFARCT} \\
+\hline
+Prise de contraceptifs oraux & 0 = Jamais; 1 = Oui & \texttt{CO} \\
+\hline
+Consommation de tabac & 0 = Non;
+1 = Fumeuse actuelle; 2 = Ancienne fumeuse & \texttt{TABAC} \\
+\hline
+Âge & Années & \texttt{AGE} \\
+\hline
+Poids & kg & \texttt{POIDS} \\
+\hline
+Taille & cm  & \texttt{TAILLE} \\
+\hline 
+Antécédents familiaux de maladie cardio-vasculaire & 0 = Non ; 1 = Oui & \texttt{ATCD} \\
+\hline
+Hypertension artérielle  &  0 = Non ; 1 = Oui & \texttt{HTA} \\
+\hline
+\end{tabular}
+
+Vous avez de telecharcher le fichier \texttt{Infarct.csv} de le site:
+
+\url{https://github.com/afalco/Atelier6/}
+
+avec la fonction \texttt{read.csv2()}, à mon ordinateur:
+
+```{r}
+Infarct <- read.csv2("~/Downloads/Atelier6-master//Infarct.csv")
+names(Infarct)
+```
+
+et après de répondre a toutes les questions suivantes vous avez de télécharger le fichier \texttt{Atelier6.Rmd} rempli à votre répertoire dans \url{https://github.com/}. \textbf{La data limite pour le rentrer est le lundi 23 décembre 2019}:
+
+
+ 1. Etudier si la variable \texttt{TAILLE} suit une distribution normal
+ 
+```{r}
+# Utiliser pour repondre la question 1
+z <- (Infarct$TAILLE-mean(Infarct$TAILLE))/sd(Infarct$TAILLE)
+mean(z)
+sd(z)
+n <- length(z)
+N <- rnorm(n)
+qqplot(z,N,xlim=c(-3,3),ylim=c(-3,3),xlab = "TAILLE standard",ylab = "N(0,1)")
+par(new=T)
+plot(z,z,type="l",col="pink",xlim=c(-3,3),ylim=c(-3,3),xlab = "",ylab = "")
+mean(Infarct$TAILLE)-median(Infarct$TAILLE)
+(mean(Infarct$TAILLE)-median(Infarct$TAILLE))/mean(Infarct$TAILLE)
+```
+
+Commentaire: La variable \texttt{TAILLE} suit une distribution nornale car elle suit une droite lineaire 
+
+ 2. Etudier si la variable \texttt{POIDS} suit une distribution normal.
+ 
+```{r}
+# Utiliser pour repondre la question 2
+z <- (Infarct$POIDSE-mean(Infarct$POIDS))/sd(Infarct$POIDS)
+mean(z)
+sd(z)
+n <- length(z)
+N <- rnorm(n)
+qqplot(z,N,xlim=c(-3,3),ylim=c(-3,3),xlab = "POIDS standard",ylab = "N(0,1)")
+par(new=T)
+plot(z,z,type="l",col="red",xlim=c(-3,3),ylim=c(-3,3),xlab = "",ylab = "")
+mean(Infarct$POIDS)-median(Infarct$POIDS)
+(mean(Infarct$POIDS)-median(Infarct$POIDS))/mean(Infarct$POIDS)
+```
+
+Commentaire:
+
+ 3. Calculer chez les femmes ayant eu un infarctus du myocarde le pourcentage de qui a prise des contraceptifs oraux et aussi chez le femmes n'en n'ayant pas eu un infarctus du myocarde le pourcentage de qui a prise de des contraceptifs oraux. 
+ 
+```{r}
+# Utiliser pour repondre la question 3
+femme.inf1 <- Infarct$CO[Infarct$INFARCT=="1"]
+femme.inf0 <- Infarct$CO[Infarct$INFARCT=="0"]
+prob.inf1 <- 100*(length(femme.inf1)/length(Infarct$CO))
+prob.inf1
+prob.inf0 <- 100*(length(femme.inf0)/length(Infarct$CO))
+prob.inf0
+```
+ 
+Commentaire: Le pourventage de femme ayant fait un infarctus et pris une contraception est d'environ 33% alors que celui de femme n'ayant pas fait d'infarctus mais ayant pris une contraception est d'environ 69%.
+
+ 4. Calculer chez le femmes qui a prise des contraceptifs oraux quelle est la probabilité d'avoir un infarctus du myocarde.
+
+```{r}
+# Utiliser pour repondre la question 4
+femme.inf1 <- Infarct$INFARCT[Infarct$CO=="1"]
+femme.inf0 <- Infarct$INFARCT[Infarct$CO=="0"]
+prob.inf1 <- 100*(length(femme.inf1)/length(Infarct$CO))
+prob.inf1
+prob.inf0 <- 100*(length(femme.inf0)/length(Infarct$CO))
+prob.inf0
+```
+ 
+ Commentaire: Chez les femmes prennant un contraceptif la probabilité de d'avoir un infarctus au myocarde est de 55%
+
+ 5. Représentez la fonction de densité de probabilité de la variable \texttt{AGE} chez l'échantillon. Est-ce qu'il est une variable discrète ou continue?
+ 
+```{r}
+# Utiliser pour repondre la question 5
+density(femme <- Infarct$AGE)
+hist(Infarct$AGE,freq=FALSE,col="purple",xlab = "AGE")
+```
+ 
+ Commentaire: La variable \texttt{AGE} est une variable continue
+
+
+  6. Est-ce qu'il \texttt{IMC} de la base de données \texttt{Infarct} est bien calculé?
+ 
+    
+```{r}
+# Utiliser pour repondre la question 6
+IMC1 <- Infarct$POIDS/(Infarct$TAILLE/100)^2
+IMC1
+```
+ 
+Commentaire: Oui cette valeur est bien calculé
+
+ 
+ 7. Est-ce que la consommation du tabac est une facteur de risque chez le femmes ayant eu un infarctus du myocarde?
+ 
+
+```{r}
+# Utiliser pour repondre la question 7
+femme.inf1 <- Infarct$INFARCT[Infarct$TABAC=="1"]
+femme.inf0 <- Infarct$INFARCT[Infarct$TABAC=="0"]
+femme.inf <- Infarct$INFARCT[Infarct$TABAC=="2"]
+prob.inf1 <- 100*(length(femme.inf1)/length(Infarct$CO))
+prob.inf1
+prob.inf0 <- 100*(length(femme.inf0)/length(Infarct$CO))
+prob.inf0
+prob.inf <- 100*(length(femme.inf)/length(Infarct$CO))
+prob.inf
+```
+
+Commentaire: Oui le tabac est un fateur de risque chez le femmes ayant eu un infarctus du myocarde. 
+
+
+  8. Quelle est la pourcentage chez le femmes avec antécédents familiaux de maladie cardio-vasculaire d'avoir un infarctus du myocarde?
+  
+```{r}
+# Utiliser pour repondre la question 8
+femme.inf1 <- Infarct$CO[Infarct$ATCD=="1"]
+femme.inf0 <- Infarct$CO[Infarct$ATCD=="0"]
+prob.inf1 <- 100*(length(femme.inf1)/length(Infarct$CO))
+prob.inf1
+prob.inf0 <- 100*(length(femme.inf0)/length(Infarct$CO))
+prob.inf0
+```
+
+  9. Est-ce le femmes ayant eu un infarctus du myocarde ont un poids moyenne différent de le femmes n'en n'ayant pas eu un infarctus du myocarde?
+  
+```{r}
+# Utiliser pour repondre la question 9
+m.pds.inf <- Infarct$POIDS[(Infarct$INFARCT=="1")]
+mean(m.pds.inf)
+m.pds.fem <- Infarct$POIDS[(Infarct$INFARCT=="0")]
+mean(m.pds.fem)
+```
+  
+  Commentaire: La moyenne du poids des femmes ayant eu un infarctus du myocarde est un plus importante de 10kg que celle n'ayant pas eu d'infarctus du myocarde.
+  
+  10. Est-ce le femmes ayant eu un infarctus du myocarde ont une taille moyenne différent de le femmes n'en n'ayant pas eu un infarctus du myocarde?
+
+```{r}
+# Utiliser pour repondre la question 10
+m.tle.inf <- Infarct$TAILLE[(Infarct$INFARCT=="1")]
+mean(m.tle.inf)
+m.tle.fem <- Infarct$TAILLE[(Infarct$INFARCT=="0")]
+mean(m.tle.fem)
+```
+
+  Commentaire: Les femmes ayant eu un infarctus du moyocarde ont presque la meme moyenne de taille que celle n'ayant pas fait d'infarctus du myocarde.
